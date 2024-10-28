@@ -52,7 +52,7 @@ export default function ToDoListScreen({navigation}) {
             <FlatList
                     data={todoList.items}
                     renderItem={({ item }) => <TodoComponent item={item} />}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => item.id}
                 />
            </View>
             <Pressable style={{flex:1, justifyContent: 'center'}} onPress={() => navigation.navigate('AddJobScreen',{capacity:todoList.lenght})}>

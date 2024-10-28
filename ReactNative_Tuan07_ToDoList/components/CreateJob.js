@@ -2,46 +2,19 @@ import React from 'react';
 import { View, TextInput, TouchableOpacity, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { addTodo, updateJob } from '../redux/todoAction';
 const AddJobScreen = ({route, navigation}) => {
     const [job, setJob] = useState('');
-    const capacity = route.params?.capacity || 0;
+    const dispatch = useDispatch();
     const isUpdate = route.params?.isUpdate || false;
     const item = route.params?.item || {};
-    const apiLink = 'https://6703edfdab8a8f8927323f9c.mockapi.io/api/todolist';
     const handleAddJob = () => {
         if(isUpdate){
-            console.log(typeof item.id);
-            console.log(apiLink.concat("/")+item.id.toString());
-            fetch(`${apiLink}/${item.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(
-                    {   id: +item.id,
-                        title: job,
-                        status: item.status
-                    }),
-            })
-            .then(response => response.json())
-            .then(data => console.log('Success:', data))
-            .catch((error) => console.error('Error:', error));
+            dispatch(updateJob({...item, title: job}));
             navigation.navigate('ToDoListScreen');
         }else{
-            fetch(apiLink, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(
-                    {   id: capacity + 1,
-                        title: job,
-                        status: false
-                    }),
-            })
-            .then(response => response.json())
-            .then(data => console.log('Success:', data))
-            .catch((error) => console.error('Error:', error));
+            dispatch(addTodo(job));
             navigation.navigate('ToDoListScreen');
         }
     }
