@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+import { Provider } from 'react-redux';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -6,9 +6,11 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Home from './components/Home';
 import ToDoListScreen from './components/ToDoListScreen';
 import AddJobScreen from './components/CreateJob';
+import store from './redux/store';
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
+    <Provider store={store}>
      <NavigationContainer>
         <Stack.Navigator  screenOptions={({navigation, route})=>({
 
@@ -38,6 +40,7 @@ export default function App() {
           <Stack.Screen name="AddJobScreen" component={AddJobScreen} options={{title:""}}/>
         </Stack.Navigator>
      </NavigationContainer>
+    </Provider>
   );
 }
 

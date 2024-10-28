@@ -4,37 +4,25 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTodos, deleteTodo } from '../redux/todoAction';
 import { useState, useEffect } from 'react';
 export default function ToDoListScreen({navigation}) {
-    const [todoList, setTodoList] = useState([]);
-
-    const apiLink = 'https://6703edfdab8a8f8927323f9c.mockapi.io/api/todolist';
-
+    const dispatch = useDispatch();
+    const todoList = useSelector((state)=>state.todos) || [];
     const isFocus = useIsFocused();
-    const getData = ()=>{
-        fetch(apiLink)
-        .then((response) => response.json())
-        .then((data) => setTodoList(data))
-        .catch((error) => console.error('Error:', error));
-    }
+   
     
     const handleRemove = (item) =>{
-        console.log(item.id);
-        fetch(`${apiLink}/${item.id}`, {
-            method: 'DELETE',
-        })
-        .then(response => response.json())
-        .then(data => console.log('Success:', data))
-        .catch((error) => console.error('Error:', error));
-        getData();
+       dispatch(deleteTodo(item.id));
     };
 
     useEffect(()=>{
         if(isFocus){
-            getData();
+           dispatch(fetchTodos());
         }
      
-    },[isFocus, todoList]);
+    },[isFocus, dispatch]);
 
     const TodoComponent = ({item}) =>{
         return (
@@ -62,7 +50,7 @@ export default function ToDoListScreen({navigation}) {
             </View>
            <View style={{flex: 4}}>
             <FlatList
-                    data={todoList}
+                    data={todoList.items}
                     renderItem={({ item }) => <TodoComponent item={item} />}
                     keyExtractor={item => item.id.toString()}
                 />
